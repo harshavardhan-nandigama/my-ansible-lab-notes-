@@ -94,4 +94,15 @@ Ansible works on a **control node** (your machine) that connects to **managed no
 
 -  Automate real-world DevOps tasks
 
+#  Ansible Ad-Hoc Commands
+
+Ad-hoc commands are **one-liner commands** used to quickly perform tasks on managed nodes **without writing a playbook**.
+
+They are ideal for quick fixes, testing, or simple repetitive tasks.
+
+##  Test Connectivity
+
+
+        ansible all -m ping
+
 
