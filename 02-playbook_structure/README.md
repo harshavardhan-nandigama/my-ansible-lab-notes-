@@ -16,7 +16,7 @@
 - Using lists and dicts in playbooks
 - Examples of complex data structures
 
-[Read → 02-data_types.md](./02-data_types.md)
+[Read → 02-data_types.md](./02-data-types.md)
 
 
 
@@ -25,7 +25,7 @@
 - Iterating over lists and dictionaries
 - Using loops with conditions
 
-[Read → 03-loops.md](./03-loops.md)
+[Read → 03-loops.md](./03-Loops.md)
 
 
 
@@ -34,7 +34,7 @@
 - Combining conditions with `and`, `or`, `not`
 - Registering output and using it conditionally
 
- [Read → 04-conditions.md](./04-conditions.md)
+ [Read → 04-conditions.md](./04-conditions-when.md)
 
 ---
 
