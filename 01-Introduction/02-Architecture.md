@@ -29,12 +29,14 @@ mple, agentless automation tool used for configuration management, application d
 
 example
 
-        [web]
-        192.168.1.10
-        192.168.1.11
 
-        [db]
-        192.168.1.12
+            [web]
+            192.168.1.10
+            192.168.1.11
+
+            [db]
+            192.168.1.12
+
 
 ### 4. Modules
 
@@ -78,7 +80,7 @@ example
 Folder structure:
 
                 roles/
-        └── webserver/               # Name of the role
+        └── webserver/              # Name of the role
             ├── tasks/              # Contains the main list of tasks to run
             ├── handlers/           # Contains handlers (e.g., restart services)
             ├── templates/          # Jinja2 templates (.j2) for config files
