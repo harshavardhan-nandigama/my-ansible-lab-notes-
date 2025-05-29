@@ -193,6 +193,6 @@ Think of lookups as asking data from outside Ansible.
 
 | Feature      |        Filters               |            Lookups                 |
 | ----------- | ---------------------------- | ---------------------------------- |
-| 🧠 Used for | Transforming data            | Fetching data from outside sources |
-| 🔧 Example  | `"hello" \| upper` → `HELLO` | `lookup('env', 'USER')`            |
-| 🛠️ Used in  | Variables, tasks, templates  | Variables, tasks                   |
+|  Used for | Transforming data            | Fetching data from outside sources |
+|  Example  | `"hello" \| upper` → `HELLO` | `lookup('env', 'USER')`            |
+|  Used in  | Variables, tasks, templates  | Variables, tasks                   |
