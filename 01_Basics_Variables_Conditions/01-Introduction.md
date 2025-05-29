@@ -28,6 +28,14 @@ It helps DevOps engineers and system administrators automate complex tasks acros
 
 ## How Ansible Works
 
+
+        Control Node (your machine)
+                |
+            (SSH)
+                ↓
+        Managed Nodes (remote servers)
+
+
 Ansible works on a **control node** (your machine) that connects to **managed nodes** (target servers) using **SSH**. You define tasks in **YAML playbooks** that Ansible executes on remote hosts.
 
         
@@ -39,6 +47,10 @@ Ansible works on a **control node** (your machine) that connects to **managed no
             yum:
                 name: httpd
                 state: present
+
+**To run this playbook:**
+
+                ansible-playbook -i inventory.ini playbook.yml
 
 
 ## Core Components of Ansible
