@@ -18,7 +18,7 @@
 - Modules, plugins, inventory, playbooks
 - Agentless architecture explained
 
-[Read More → 02-ansible-architecture.md](./02-ansible-architecture.md)
+[Read More → 02-ansible-architecture.md](./02-Architecture.md)
 
 ---
 
@@ -28,7 +28,7 @@
 - INI and YAML format examples
 - Grouping hosts and variables
 
- [Read More → 03-inventory.md](./03-inventory.md)
+ [Read More → 03-inventory.md](./03-Inventory.md)
 
 
 
