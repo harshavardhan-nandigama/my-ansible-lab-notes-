@@ -8,7 +8,7 @@
 - Key features and benefits
 - Use cases in real-world DevOps
 
-[Read More → 01-introduction.md](./01-introduction.md)
+[Read More → 01-introduction.md](./01-Introduction.md)
 
 ---
 
