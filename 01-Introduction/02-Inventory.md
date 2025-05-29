@@ -1,11 +1,11 @@
-# 📋 Ansible Inventory Basics
+# Ansible Inventory 
 
 ##  What is an Inventory?
 
 An **inventory** in Ansible is a **list of hosts (servers)** that you want to manage.  
 You tell Ansible **which servers to target** using an inventory file.
 
->  Think of it as your address book of servers.
+ Think of it as your address book of servers.
 
 Ansible reads this file to know **where to run your automation**.
 
@@ -60,7 +60,7 @@ Requires boto3, and AWS credentials setup.
 
 - ansible_port: Optional SSH port
 
-**📍 Where to Place Inventory File?**
+** Where to Place Inventory File?**
 
 - In the same directory as your playbook
 
