@@ -1,6 +1,6 @@
-# 🔁 Ansible Loops 
+# 03- Ansible Loops 
 
-## 📘 What Are Loops in Ansible?
+## What Are Loops in Ansible?
 
 In Ansible, **loops** allow you to repeat a task multiple times with different values.
 
@@ -49,7 +49,7 @@ Instead of writing the same task again and again for different items (like users
             - php
             - mariadb-server
 
-## 👤 Example 2: Create Multiple Users
+## Example 2: Create Multiple Users
 
 - name: Create team users
   user:
@@ -72,7 +72,7 @@ Instead of writing the same task again and again for different items (like users
             - resolv.conf
 
 
-# 🔂 Advanced Loops
+# Advanced Loops
 
 ### Looping Over Dictionaries
 
@@ -98,7 +98,7 @@ Instead of writing the same task again and again for different items (like users
             label: "{{ item }}"
 
         
-### ⚠️ with_items (Deprecated Style)
+###  with_items (Deprecated Style)
 
     - name: Install packages (old method)
     yum:
@@ -111,7 +111,7 @@ Instead of writing the same task again and again for different items (like users
 
 ## When to Use Loops
 
-| 🔧 Task            | 📄 Module Example                   |
+| 🔧 Task            |  Module Example                     |
 | ------------------ | ----------------------------------- |
 | Install packages   | `yum` + `loop`                      |
 | Create users       | `user` + `loop`                     |

@@ -1,14 +1,14 @@
-# Ansible "Functions" (Filters & Lookups)
+# 05- Functions (Filters & Lookups)
 
 
-## 📘 What Are Functions in Ansible?
+## What Are Functions in Ansible?
 
 In Ansible, you don't write functions like in Python or Java.  
 Instead, you use **filters** and **lookups**, which **act like built-in functions** to:
 
-- 🔁 Transform data (e.g., change text to uppercase)
-- 📤 Get data from files or the environment
-- 🔍 Process lists, strings, numbers, and more
+- Transform data (e.g., change text to uppercase)
+-  Get data from files or the environment
+-  Process lists, strings, numbers, and more
 
 These tools are part of **Jinja2 templating**, which is built into Ansible.
 
