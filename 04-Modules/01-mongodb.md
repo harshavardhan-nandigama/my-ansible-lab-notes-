@@ -1,0 +1,110 @@
+# Playbook: Configure MongoDB Server
+
+## What this file does
+
+This playbook installs and configures **MongoDB** on hosts in the `mongodb` group.  
+It demonstrates the use of several **Ansible built-in modules** to automate:
+
+✅ Adding a YUM repo  
+✅ Installing MongoDB  
+✅ Starting/enabling the service  
+✅ Configuring MongoDB to allow remote connections  
+✅ Restarting the service  
+
+---
+
+## Modules used and their purpose
+
+|   Module            |               Purpos                          |
+|---------------------|---------------------------------------------- |
+| `copy`              | Copy MongoDB repo file to target machine      |
+| `dnf`               | Install MongoDB server package                |
+| `service`           | Start, enable, and restart MongoDB service    |
+| `replace`           | Modify MongoDB config to allow remote access  |
+
+---
+
+## Explanation of key tasks
+
+## Playbook Header Block
+
+
+    - name: configuring mongodb server
+      become: yes
+      hosts: mongodb
+
+### 1️⃣ Copy MongoDB repo file
+
+
+    - name: copy mongodb repo
+      ansible.builtin.copy:
+        src: mongo.repo
+        dest: /etc/yum.repos.d/mongo.repo
+
+
+Module: copy
+
+Purpose: Copies a local mongo.repo file to the target server under /etc/yum.repos.d/
+
+Why: Adds MongoDB repository so that dnf can install the correct version of MongoDB.
+
+### 2️⃣ Install MongoDB server
+
+    - name: Install mongodb server
+      ansible.builtin.dnf:
+        name: mongodb-org
+        state: present
+
+
+Module: dnf
+
+Purpose: Installs the mongodb-org package
+
+Why: mongodb-org is the full MongoDB server package provided by MongoDB.
+
+
+### 3️⃣ Start and enable mongod service
+
+
+    - name: start and enable mongod
+      ansible.builtin.service:
+        name: mongod
+        state: started
+        enabled: yes
+
+
+Module: service
+
+Purpose: Ensures mongod service is running and enabled on boot.
+
+### 4️⃣ Allow remote connections
+
+    - name: allow remote connections
+      ansible.builtin.replace:
+        path: /etc/mongod.conf
+        regexp: '127.0.0.1'
+        replace: '0.0.0.0'
+
+
+Module: replace
+
+Purpose: Replaces 127.0.0.1 with 0.0.0.0 in /etc/mongod.conf.
+
+Why: By default MongoDB only listens on localhost → this change allows remote access from any IP.
+
+Tip: You should ensure firewall settings allow connections as well.
+
+### 5️⃣ Restart MongoDB
+
+    - name: restart mongodb
+      ansible.builtin.service:
+        name: mongod
+        state: restarted
+
+Module: service
+
+Purpose: Restarts mongod service so the config changes take effect.
+
+
+
+
