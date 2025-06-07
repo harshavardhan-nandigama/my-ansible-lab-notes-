@@ -97,7 +97,7 @@ This role automates the installation and configuration of the **Catalogue** micr
 ```yaml
 - name: load products
   ansible.builtin.shell: mongosh --host mongodb.harshavn24.site < /app/db/master-data.js
-  when: catalogue_output.stdout | int < 0
+  when: catalogue_output.stdout_lines[-1] | int == 0
 ```
 
 * If products count < 0 (or failed), loads product data using `master-data.js`.
