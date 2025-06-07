@@ -1,232 +1,286 @@
-# Playbook: Configure Catalogue Component
+
+# Configure Catalogue Component
 
 ## What this file does
 
-This playbook automates the **deployment and configuration of the `catalogue` component** of an eCommerce application.  
-It uses a combination of Ansible modules to:
+This playbook automates the **deployment and configuration of the `catalogue` component** of an eCommerce application.
+It manages:
 
-✅ Manage Node.js version  
-✅ Set up application directory and user  
-✅ Download and deploy application code  
-✅ Install dependencies  
-✅ Configure and start the catalogue service  
-✅ Configure MongoDB client and load initial data  
+✅ Node.js version and installation
+✅ App directory and system user setup
+✅ Downloading and extracting the catalogue application code
+✅ Installing Node.js dependencies
+✅ Setting up and managing the catalogue systemd service
+✅ Installing MongoDB client and configuring repo
+✅ Checking and loading product data into MongoDB only if needed
 
+| Module                  | Purpose                                         |
+| ----------------------- | ----------------------------------------------- |
+| `command`               | Disable/enable Node.js module, check MongoDB db |
+| `dnf`                   | Install Node.js and MongoDB client              |
+| `file`                  | Create app directory                            |
+| `user`                  | Create roboshop system user                     |
+| `get_url`               | Download catalogue code zip                     |
+| `unarchive`             | Extract code zip                                |
+| `community.general.npm` | Install Node.js dependencies                    |
+| `copy`                  | Copy service file and MongoDB repo              |
+| `systemd`               | Reload systemd daemon                           |
+| `service`               | Start and enable catalogue service              |
+| `debug`                 | Print command output                            |
+| `shell`                 | Load MongoDB data conditionally                 |
 
-| Module                  | Purpose                                           |
-| ----------------------- | ------------------------------------------------- |
-| `command`               | Run shell command (disable/enable Node.js module) |
-| `dnf`                   | Install Node.js and MongoDB client                |
-| `file`                  | Create application directory                      |
-| `user`                  | Create system user                                |
-| `get_url`               | Download application zip                          |
-| `unarchive`             | Extract application zip                           |
-| `community.general.npm` | Install Node.js dependencies                      |
-| `copy`                  | Copy service and repo files                       |
-| `systemd`               | Reload systemd daemon                             |
-| `service`               | Start and enable service                          |
-| `debug`                 | Print debug output                                |
-| `shell`                 | Run MongoDB shell to load data                    |
+---
 
 ## Playbook Header Block
 
+```yaml
+- name: configure catalogue component
+  hosts: catalogue
+  become: yes
+```
 
-    - name: configure catalogue component
-      hosts: catalogue
-      become: yes
+---
 
 ## Explanation of key tasks
 
-### 1️⃣ Disable default Node.js
+### 1️⃣ Disable default Node.js module
 
-        - name: disable default nodejs
-          ansible.builtin.command: dnf module disable nodejs -y
+```yaml
+- name: disable default nodejs
+  ansible.builtin.command: dnf module disable nodejs -y
+```
 
+**Module**: `command`
+**Purpose**: Disables the default Node.js module stream to prevent conflicts.
 
-Module: command
+---
 
-Purpose: Disables default Node.js module to avoid version conflict.
+### 2️⃣ Enable Node.js 20 module
 
-### 2️⃣ Enable Node.js 20
+```yaml
+- name: enable nodejs:20
+  ansible.builtin.command: dnf module enable nodejs:20 -y
+```
 
-    - name: enable nodejs:20
-      ansible.builtin.command: dnf module enable nodejs:20 -y
+**Module**: `command`
+**Purpose**: Enables Node.js version 20 module stream for installation.
 
-Module: command
-
-Purpose: Enables Node.js version 20 module.
+---
 
 ### 3️⃣ Install Node.js
 
-    - name: install nodejs
-      ansible.builtin.dnf:
-        name: nodejs
-        state: present
+```yaml
+- name: install nodejs
+  ansible.builtin.dnf:
+    name: nodejs
+    state: present
+```
 
-Module: dnf
+**Module**: `dnf`
+**Purpose**: Installs Node.js package from the enabled module stream.
 
-Purpose: Installs Node.js from enabled module stream.
+---
 
 ### 4️⃣ Create application directory
 
+```yaml
 - name: create app directory
   ansible.builtin.file:
     path: /app
     state: directory
+```
 
-Module: file
+**Module**: `file`
+**Purpose**: Creates the `/app` directory for the application code.
 
-Purpose: Creates /app directory to host application code.
+---
 
 ### 5️⃣ Create roboshop system user
 
-    - name: create roboshop system user
-      ansible.builtin.user:
-        name: roboshop
-        shell: /sbin/nologin
-        system: true
-        home: /app
+```yaml
+- name: create roboshop system user
+  ansible.builtin.user:
+    name: roboshop
+    shell: /sbin/nologin
+    system: true
+    home: /app
+```
 
-Module: user
+**Module**: `user`
+**Purpose**: Creates the `roboshop` system user with no login shell and `/app` as home directory.
 
-Purpose: Creates roboshop system user with /app as home, no shell login.
+---
 
-### 6️⃣ Download catalogue code
+### 6️⃣ Download catalogue application code
 
-    - name: download catalogue code
-      ansible.builtin.get_url:
-        url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
-        dest: /tmp/catalogue.zip
+```yaml
+- name: download catalogue code
+  ansible.builtin.get_url:
+    url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
+    dest: /tmp/catalogue.zip
+```
 
-Module: get_url
+**Module**: `get_url`
+**Purpose**: Downloads the catalogue component archive from S3.
 
-Purpose: Downloads the application zip from S3.
+---
 
 ### 7️⃣ Extract catalogue code
 
-    - name: extract catalogue code
-      ansible.builtin.unarchive:
-        src: /tmp/catalogue.zip
-        dest: /app
-        remote_src: yes
+```yaml
+- name: extract catalogue code
+  ansible.builtin.unarchive:
+    src: /tmp/catalogue.zip
+    dest: /app
+    remote_src: yes
+```
 
-Module: unarchive
+**Module**: `unarchive`
+**Purpose**: Extracts the downloaded archive into `/app`.
 
-Purpose: Extracts application code to /app.
+---
 
 ### 8️⃣ Install Node.js dependencies
 
+```yaml
 - name: install dependencies
   community.general.npm:
     path: /app
+```
 
-Module: community.general.npm
+**Module**: `community.general.npm`
+**Purpose**: Installs the required Node.js packages inside `/app`.
 
-Purpose: Installs Node.js dependencies (package.json) in /app.
+---
 
-### 9️⃣ Copy catalogue service file
+### 9️⃣ Copy catalogue systemd service file
 
-    - name: copy catalogue service to system directory
-      ansible.builtin.copy:
-        src: catalogue.service
-        dest: /etc/systemd/system/catalogue.service
+```yaml
+- name: copy catalogue service to system directory
+  ansible.builtin.copy:
+    src: catalogue.service
+    dest: /etc/systemd/system/catalogue.service
+```
 
-Module: copy
+**Module**: `copy`
+**Purpose**: Copies the systemd service definition for the catalogue service.
 
-Purpose: Deploys systemd service unit file for catalogue service.
+---
 
-### 10️⃣ Reload systemd daemon
+### 🔟 Reload systemd daemon
 
-    - name: systemctl daemon reload
-      ansible.builtin.systemd:
-        daemon_reload: yes
+```yaml
+- name: systemctl daemon reload
+  ansible.builtin.systemd:
+    daemon_reload: yes
+```
 
-Module: systemd
+**Module**: `systemd`
+**Purpose**: Reloads systemd manager configuration to recognize new service files.
 
-Purpose: Reloads systemd to pick up new service file.
+---
 
-### 11️⃣ Start and enable catalogue service
+### 1️⃣1️⃣ Start and enable catalogue service
 
-    - name: start and enable catalogue
-      ansible.builtin.service:
-        name: catalogue
-        state: started
-        enabled: yes
-        
-Module: service
+```yaml
+- name: start and enable catalogue
+  ansible.builtin.service:
+    name: catalogue
+    state: started
+    enabled: yes
+```
 
-Purpose: Starts and enables catalogue service.
+**Module**: `service`
+**Purpose**: Starts and enables the catalogue service to run on boot.
 
-### 12️⃣ Copy MongoDB repo
+---
 
-    - name: copy mongodb repo
-      ansible.builtin.copy:
-        src: mongo.repo
-        dest: /etc/yum.repos.d/mongo.repo
+### 1️⃣2️⃣ Copy MongoDB repository file
 
-Module: copy
+```yaml
+- name: copy mongodb repo
+  ansible.builtin.copy:
+    src: mongo.repo
+    dest: /etc/yum.repos.d/mongo.repo
+```
 
-Purpose: Copies MongoDB repo file to configure package source.
+**Module**: `copy`
+**Purpose**: Adds MongoDB yum repo config to install MongoDB tools.
 
+---
 
-### 13️⃣ Install MongoDB client
+### 1️⃣3️⃣ Install MongoDB client (mongosh)
 
-    - name: install mongodb client
-      ansible.builtin.dnf:
-        name: mongodb-mongosh
-        state: present
+```yaml
+- name: install mongodb client
+  ansible.builtin.dnf:
+    name: mongodb-mongosh
+    state: present
+```
 
-Module: dnf
+**Module**: `dnf`
+**Purpose**: Installs `mongosh`, the MongoDB shell client.
 
-Purpose: Installs mongosh CLI tool to interact with MongoDB.
+---
 
-### 14️⃣ Check if products loaded
+### 1️⃣4️⃣ Check if catalogue products data is loaded
 
-    - name: check products loaded or not
-      ansible.builtin.command: mongosh --host mongodb.harshavn24.site --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
-      register: catalogue_output
-        
-Module: command
+```yaml
+- name: check products loaded or not
+  ansible.builtin.command: mongosh --host mongodb.harshavn24.site --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
+  register: catalogue_output
+```
 
-Purpose: Runs MongoDB shell command to check if catalogue database exists.
+**Module**: `command`
+**Purpose**: Runs a MongoDB shell command to check if the `catalogue` database exists.
 
-Registers result in catalogue_output.
+---
 
-### 15️⃣ Print catalogue output
+### 1️⃣5️⃣ Debug print catalogue output
 
-    - name: print catalogue output
-      ansible.builtin.debug:
-        msg: "{{ catalogue_output.stdout }}"
+```yaml
+- name: print catalogue output
+  ansible.builtin.debug:
+    msg: "{{ catalogue_output.stdout }}"
+```
 
-Module: debug
+**Module**: `debug`
+**Purpose**: Outputs the command result for verification/logging.
 
-Purpose: Prints the value of catalogue_output.stdout for visibility.
+---
 
-### 16️⃣ Load products (conditionally)
+### 1️⃣6️⃣ Load catalogue products data if missing
 
-    - name: load products
-      ansible.builtin.shell: mongosh --host mongodb.harshavn24.site < /app/db/master-data.js
-      when: catalogue_output.stdout | int < 0
-Module: shell
+```yaml
+- name: load products
+  ansible.builtin.shell: mongosh --host mongodb.harshavn24.site < /app/db/master-data.js
+  when: catalogue_output.stdout | int < 0
+```
 
-Purpose: Loads master-data.js into MongoDB only if catalogue database is not present (index < 0).
+**Module**: `shell`
+**Purpose**: Runs a script to load initial product data into MongoDB only if the `catalogue` DB does not exist (`indexOf` returns -1).
 
-Conditional execution using when.
+---
 
+## Why This Playbook Is Useful
 
-### Summary
-This is an excellent example of combining many useful Ansible modules:
+* Ensures the catalogue microservice runs on the correct Node.js version.
+* Automates setup of the service environment and code deployment.
+* Installs MongoDB client tools and configures repository for package management.
+* Checks and conditionally loads initial product data, preventing duplication.
+* Handles service lifecycle cleanly with systemd.
+* Provides idempotent, repeatable deployment for production environments.
 
-✅ command, dnf, file, user, get_url, unarchive, community.general.npm, copy, systemd, service, debug, shell, replace (in earlier MongoDB playbook).
+---
 
-- Shows good practical real-world automation:
+## Real-World Scenario
 
-- Software installation
+👉 For a microservices eCommerce app:
 
-- App deployment
+* The catalogue service holds product data and APIs.
+* Requires Node.js v20 and MongoDB connectivity.
+* This playbook automates deployment on multiple nodes or during updates.
+* It safeguards against reloading data unnecessarily, keeping the database clean.
+* Supports continuous integration pipelines and scaling by automating the entire lifecycle.
 
-- Service management
-
-- MongoDB data initialization
-
-- Use of conditions and debug output
+---
