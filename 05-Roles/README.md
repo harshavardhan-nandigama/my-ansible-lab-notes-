@@ -1,6 +1,6 @@
 # Roles Concept with Roboshop Project
 
-## 🎯 Objective
+## Objective
 
 On Day 5 of my Ansible learning journey, I implemented **Ansible Roles** to automate the deployment of a complete microservices-based ecommerce project - **Roboshop**.
 
@@ -50,7 +50,7 @@ This project demonstrates how to:
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```plaintext
 roles/
@@ -95,7 +95,7 @@ ansible-playbook -i inventory.ini -e "component=catalogue" main.yaml
 
 ---
 
-## 🔄 Common Role Usage
+## Common Role Usage
 
 The `common` role contains reusable tasks for:
 
@@ -118,7 +118,7 @@ Each component playbook includes:
 
 ---
 
-## 🧩 Components Automated
+## Components Automated
 
 ✅ MongoDB
 ✅ MySQL
@@ -135,9 +135,9 @@ Each component playbook includes:
 
 
 
-## 📝 Summary
+## Summary
 
-👉 This was my **Ansible Project** focused on:
+This was my **Ansible Project** focused on:
 
 ✅ Understanding and using **Roles**
 ✅ Structuring Ansible code
@@ -145,16 +145,4 @@ Each component playbook includes:
 ✅ Managing a complete **microservices architecture**
 ✅ Deploying using **Ansible Automation**
 
----
-
-## Final Notes:
-
-👉 I have practiced:
-
-* `include_role` and `tasks_from`
-* `loop`, `when`, `register`, `debug`
-* `community.general.npm`, `community.mysql.mysql_db`, etc
-* Creating my own `common` role for reusability
-
----
 
