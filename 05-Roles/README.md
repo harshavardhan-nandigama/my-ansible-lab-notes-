@@ -23,7 +23,7 @@ This project demonstrates how to:
 
 ---
 
-## 🗺️ Architecture
+## Architecture
 
 ```plaintext
                               +-------------------+
